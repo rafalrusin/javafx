@@ -3,3 +3,5 @@ Boundary points for shapes are calculated using bisection algorithm, utilizing J
 Sample application allows dragging shapes, which recalculates arrows positions.
 
 ![Screenshot](https://github.com/downloads/rafalrusin/javafx/arrows.png "Screenshot")
+
+[Launch](http://sites.google.com/site/rrusin999/syntax/arrows.jnlp "Launch Arrows")
