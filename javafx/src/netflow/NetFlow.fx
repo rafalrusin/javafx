@@ -18,18 +18,21 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Panel;
 
 abstract class MyNode extends Group {
     abstract function update():Void;
 }
 
 class MyController {
+    public var group:Group = Group {};
     public var items:MyNode[];
 
     public function update():Void {
         for (i:MyNode in items) {
             i.update();
         }
+        group.content = items;
     }
 }
 
@@ -250,13 +253,31 @@ controller.items = [
     MyLine { a: shape2 b: shape3 node: genConnection("0", "10") }
     MyLine { a: shape3 b: shape1 node: genConnection("0", "10") }
 ];
+controller.update();
 
 Stage {
     title: "NetFlow"
     scene: Scene {
         width: 800
         height: 600
-        content: controller.items
+        content: [
+            Rectangle {
+                width: 800
+                height: 600
+                fill: Color.WHITE
+                
+                onMouseClicked: function(e:MouseEvent):Void {
+                    var shape1:MyShape = MyShape {
+                                    node: genNode("Source", "name")
+                                    position: Point2D { x: e.x y: e.y }
+                                    controller: controller
+                                }
+                    insert shape1 into controller.items;
+                    controller.update();
+                }
+            }
+            controller.group
+        ]
     }
 }
 
