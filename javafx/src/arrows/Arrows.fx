@@ -1,4 +1,4 @@
-package rr;
+package arrows;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;

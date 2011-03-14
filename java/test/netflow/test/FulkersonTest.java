@@ -1,6 +1,6 @@
-package test;
+package netflow.test;
 
-import rr.Fulkerson;
+import netflow.Fulkerson;
 import junit.framework.TestCase;
 
 public class FulkersonTest extends TestCase {
