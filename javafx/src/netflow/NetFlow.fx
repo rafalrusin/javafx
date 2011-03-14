@@ -20,6 +20,7 @@ import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
 import javafx.geometry.VPos;
 import javafx.scene.layout.Container;
+import javafx.scene.input.MouseButton;
 
 abstract class MyNode extends Container {
 //    abstract function update():Void;
@@ -29,12 +30,69 @@ abstract class MyNode extends Container {
 class MyController extends Container {
     public var items:MyNode[];
 
+    public var selected:MyNode = null;
+
     public function update():Void {
 //        for (i:MyNode in items) {
 //            i.update();
 //        }
         content = items;
         requestLayout();
+    }
+
+    public function deleteNode(n:MyNode):Void {
+        var l:MyNode[] = items;
+        //Delete connections
+        for (i:MyNode in l) {
+            if (i instanceof MyLine) {
+                var v:MyLine = i as MyLine;
+                if (v.a == n or v.b == n) {
+                    delete i from items;
+                }
+            }
+        }
+
+        //Delete node
+        delete n from items;
+        update();
+    }
+
+    public function connectNode(n:MyNode):Void {
+        if (selected != null) {
+            var a:MyShape = selected as MyShape;
+            var b:MyShape = n as MyShape;
+
+            //Delete connection if already exists
+            for (i:MyNode in items) {
+                if (i instanceof MyLine) {
+                    var j:MyLine = i as MyLine;
+                    if (j.a == a and j.b == b or j.a == b and j.b == a) {
+                        delete i from items;
+                        update();
+                        return;
+                    }
+                }
+            }
+
+            //Add new connection
+            var l:MyLine = MyLine { a: a b: b node: genConnection("0", "10") }
+            insert l into items;
+            update();
+        }
+    }
+
+    public function selectNode(n:MyNode):Void {
+        selected = n;
+        for (i:MyNode in items) {
+            if (i instanceof MyShape) {
+                var s:MyShape = i as MyShape;
+                if (i == n) {
+                    s.node.selectionColor = Color.RED;
+                } else {
+                    s.node.selectionColor = Color.LIGHTBLUE;
+                }
+            }
+        }
     }
 
     override public function doLayout():Void {
@@ -67,7 +125,7 @@ function middle(a:Point2D,b:Point2D):Point2D {
 
 class MyShape extends MyNode {
     public var controller:MyController;
-    public var node:Node;
+    public var node:InnerNode;
     public var position:Point2D;
 
 //    public var s:Node;
@@ -89,6 +147,16 @@ class MyShape extends MyNode {
 
     public override var onMousePressed = function(e:MouseEvent):Void {
         dragBase = position;
+        if (e.button == MouseButton.PRIMARY) {
+            controller.selectNode(this);
+        }
+        if (e.button == MouseButton.SECONDARY) {
+            if (controller.selected == this) {
+                controller.deleteNode(this);
+            } else {
+                controller.connectNode(this);
+            }
+        }
     }
 
     public function findBoundaryPoint(a:Point2D,b:Point2D):Point2D {
@@ -111,6 +179,7 @@ class MyShape extends MyNode {
     }
 
     init {
+        blocksMouse = true;
 //        translateX = -node.boundsInLocal.width/2;
 //        translateY = -node.boundsInLocal.height/2;
 //        println("{translateX} {translateY}");
@@ -208,34 +277,41 @@ class MyLine extends MyNode {
 
 var controller: MyController = MyController {}
 
-function genNode(type: String, name: String) {
-    var l=5;
-    var b=VBox {
-        padding: Insets { bottom: l top: l left: l right: l }
-        content: [
-            Label { text: type }
-            TextBox { text: name }
-        ]
-    }
-    var rect:Rectangle=Rectangle {
-                fill: Color.LIGHTBLUE
-                stroke: Color.BLACK
-                strokeWidth: 0.5
-                arcHeight: 10
-                arcWidth: 10
-            }
+class InnerNode extends Container {
+    public var type: String;
+    public var name: String;
 
-    Container {
-        content: [
+    public var selectionColor: Color = Color.LIGHTBLUE;
+
+    var rect:Rectangle=Rectangle {
+        fill: bind selectionColor
+        stroke: Color.BLACK
+        strokeWidth: 0.5
+        arcHeight: 10
+        arcWidth: 10
+    }
+
+    override function doLayout():Void {
+        var m:Node[] = getManaged(content);
+        layoutNode(m[1],0,0,getNodePrefWidth(m[1]),getNodePrefHeight(m[1]));
+        rect.width=getNodePrefWidth(m[1]);
+        rect.height=getNodePrefHeight(m[1]);
+    }
+
+    init {
+        var l=5;
+        var b=VBox {
+            padding: Insets { bottom: l top: l left: l right: l }
+            content: [
+                Label { text: type }
+                TextBox { text: name }
+            ]
+        }
+
+        content = [
             rect,
             b
         ]
-        override function doLayout():Void {
-            var m:Node[] = getManaged(content);
-            layoutNode(m[1],0,0,getNodePrefWidth(m[1]),getNodePrefHeight(m[1]));
-            rect.width=getNodePrefWidth(m[1]);
-            rect.height=getNodePrefHeight(m[1]);
-        }
     }
 }
 
@@ -256,17 +332,17 @@ function genConnection(flow: String, maxFlow: String):Node {
 
 
 var shape1:MyShape = MyShape {
-                node: genNode("Source", "name")
+                node: InnerNode { type: "Source" name: "name" }
                 position: Point2D { x: 50 y: 300 }
                 controller: controller
             }
 var shape2:MyShape = MyShape {
-                node: genNode("Sink", "name")
+                node: InnerNode { type: "Source" name: "name" }
                 position: Point2D { x: 750 y: 100 }
                 controller: controller
             }
 var shape3:MyShape = MyShape {
-                node: genNode("Node", "name")
+                node: InnerNode { type: "Source" name: "name" }
                 position: Point2D { x: 750 y: 500 }
                 controller: controller
             }
@@ -291,14 +367,16 @@ Stage {
                 height: 600
                 fill: Color.WHITE
                 
-                onMouseClicked: function(e:MouseEvent):Void {
-                    var shape1:MyShape = MyShape {
-                                    node: genNode("Source", "name")
-                                    position: Point2D { x: e.x y: e.y }
-                                    controller: controller
-                                }
-                    insert shape1 into controller.items;
-                    controller.update();
+                onMousePressed: function(e:MouseEvent):Void {
+                    if (e.button == MouseButton.PRIMARY) {
+                        var shape1:MyShape = MyShape {
+                                        node: InnerNode { type: "Source" name: "name" }
+                                        position: Point2D { x: e.x y: e.y }
+                                        controller: controller
+                                    }
+                        insert shape1 into controller.items;
+                        controller.update();
+                    }
                 }
             }
             controller
