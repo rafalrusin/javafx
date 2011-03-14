@@ -325,7 +325,12 @@ function genConnection(flow: String, maxFlow: String):Node {
 
                 text: "{flow} / "
             }
-            TextBox { text: maxFlow }
+            TextBox { 
+                layoutInfo: LayoutInfo {
+                    width: 30
+                }
+                text: maxFlow
+            }
             ]
     }
 }
