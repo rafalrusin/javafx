@@ -1,7 +1,10 @@
-package javafx;
+package test;
 
-public class FulkersonTest {
-    public void run() {
+import rr.Fulkerson;
+import junit.framework.TestCase;
+
+public class FulkersonTest extends TestCase {
+    public void test() {
         Fulkerson g = new Fulkerson();
         g.addEdge("s","o",3);
         g.addEdge("s","p",3);
