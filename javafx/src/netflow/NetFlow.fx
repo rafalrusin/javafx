@@ -2,7 +2,6 @@ package netflow;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
@@ -14,25 +13,44 @@ import javafx.scene.transform.Affine;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.LayoutInfo;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Panel;
+import javafx.geometry.VPos;
+import javafx.scene.layout.Container;
 
-abstract class MyNode extends Group {
-    abstract function update():Void;
+abstract class MyNode extends Container {
+//    abstract function update():Void;
+
 }
 
-class MyController {
-    public var group:Group = Group {};
+class MyController extends Container {
     public var items:MyNode[];
 
     public function update():Void {
-        for (i:MyNode in items) {
-            i.update();
+//        for (i:MyNode in items) {
+//            i.update();
+//        }
+        content = items;
+        requestLayout();
+    }
+
+    override public function doLayout():Void {
+        for (i:Node in getManaged(content)) {
+            if (i instanceof MyShape) {
+                var k:MyShape = i as MyShape;
+                layoutNode(i,0,0,getNodePrefWidth(i),getNodePrefHeight(i));
+                positionNode(i, -getNodePrefWidth(i)/2 + k.position.x, -getNodePrefHeight(i)/2 + k.position.y);
+            }
         }
-        group.content = items;
+        for (i:Node in getManaged(content)) {
+            if (i instanceof MyLine) {
+                var l:MyLine = i as MyLine;
+                l.rebuild();
+            }
+        }
     }
 }
 
@@ -54,16 +72,12 @@ class MyShape extends MyNode {
 
 //    public var s:Node;
 
-    public function updatePosition():Void {
-        translateX = position.x;
-        translateY = position.y;
-    }
+//    public function updatePosition():Void {
+//        translateX = position.x;
+//        translateY = position.y;
+//    }
 
     var dragBase:Point2D;
-
-    override function update () : Void {
-        updatePosition();
-    }
 
     public override var onMouseDragged = function(e:MouseEvent):Void {
         position = Point2D {
@@ -84,8 +98,8 @@ class MyShape extends MyNode {
             return m;
         } else {
             var n:Point2D = Point2D {
-                x: m.x - position.x
-                y: m.y - position.y
+                x: m.x - position.x + width/2
+                y: m.y - position.y + height/2
             }
 
             if (contains(n)) {
@@ -97,10 +111,10 @@ class MyShape extends MyNode {
     }
 
     init {
-        translateX = -node.boundsInLocal.width/2;
-        translateY = -node.boundsInLocal.height/2;
-        println("{translateX} {translateY}");
-        updatePosition();
+//        translateX = -node.boundsInLocal.width/2;
+//        translateY = -node.boundsInLocal.height/2;
+//        println("{translateX} {translateY}");
+//        updatePosition();
         content = [
             node
         ]
@@ -110,9 +124,9 @@ class MyShape extends MyNode {
 class MyLine extends MyNode {
     public var node:Node;
     
-    override function update () : Void {
-        rebuild();
-    }
+//    override function update () : Void {
+//        rebuild();
+//    }
 
     public var a:MyShape;
     public var b:MyShape;
@@ -203,26 +217,38 @@ function genNode(type: String, name: String) {
             TextBox { text: name }
         ]
     }
-    Group {
-        content: [
-            Rectangle {
-                width: bind b.width
-                height: bind b.height
+    var rect:Rectangle=Rectangle {
                 fill: Color.LIGHTBLUE
                 stroke: Color.BLACK
                 strokeWidth: 0.5
                 arcHeight: 10
                 arcWidth: 10
             }
+
+    Container {
+        content: [
+            rect,
             b
-            ]
+        ]
+        override function doLayout():Void {
+            var m:Node[] = getManaged(content);
+            layoutNode(m[1],0,0,getNodePrefWidth(m[1]),getNodePrefHeight(m[1]));
+            rect.width=getNodePrefWidth(m[1]);
+            rect.height=getNodePrefHeight(m[1]);
+        }
     }
 }
 
 function genConnection(flow: String, maxFlow: String):Node {
     HBox {
         content: [
-            Label { text: "{flow} / " }
+            Label {
+                layoutInfo: LayoutInfo {
+                    vpos: VPos.CENTER
+                }
+
+                text: "{flow} / "
+            }
             TextBox { text: maxFlow }
             ]
     }
@@ -253,7 +279,6 @@ controller.items = [
     MyLine { a: shape2 b: shape3 node: genConnection("0", "10") }
     MyLine { a: shape3 b: shape1 node: genConnection("0", "10") }
 ];
-controller.update();
 
 Stage {
     title: "NetFlow"
@@ -276,8 +301,10 @@ Stage {
                     controller.update();
                 }
             }
-            controller.group
+            controller
         ]
     }
 }
+
+controller.update();
 
