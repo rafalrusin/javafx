@@ -4,6 +4,8 @@ import javafx.scene.layout.Container;
 import javafx.scene.paint.Color;
 import java.lang.Void;
 import netflow.MyNode;
+import javafx.geometry.Point2D;
+import javafx.scene.input.MouseEvent;
 
 public class MyController extends Container {
     public var items:MyNode[];
@@ -16,6 +18,16 @@ public class MyController extends Container {
 //        }
         content = items;
         requestLayout();
+    }
+
+    public function createNode(e:MouseEvent):Void {
+        var shape1:MyShape = MyShape {
+                        node: InnerNode {}
+                        position: Point2D { x: e.x y: e.y }
+                        controller: this
+                    }
+        insert shape1 into items;
+        shape1.node.nameBox.text = "node-{items.size()}";
     }
 
     public function deleteNode(n:MyNode):Void {
@@ -81,7 +93,8 @@ public class MyController extends Container {
                 positionNode(i, -getNodePrefWidth(i)/2 + k.position.x, -getNodePrefHeight(i)/2 + k.position.y);
             }
         }
-        for (i:Node in getManaged(content)) {
+
+        for (i:MyNode in items) {
             if (i instanceof MyLine) {
                 var l:MyLine = i as MyLine;
                 l.rebuild();

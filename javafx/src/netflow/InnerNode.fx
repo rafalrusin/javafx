@@ -7,12 +7,13 @@ import javafx.scene.layout.Container;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.LayoutInfo;
+import javafx.scene.control.Label;
 
 public class InnerNode extends Container {
-    public var type: String;
-    public var name: String;
-
     public var selectionColor: Color = Color.LIGHTBLUE;
+    public var nameBox: TextBox = TextBox {};
 
     var rect:Rectangle=Rectangle {
         fill: bind selectionColor
@@ -31,15 +32,41 @@ public class InnerNode extends Container {
 
     init {
         var l=5;
-        var b=VBox {
-            padding: Insets { bottom: l top: l left: l right: l }
-            content: [
-                ChoiceBox {
-                    items: [ "Node", "Source", "Sink" ]
-                }
-                TextBox { text: name }
-            ]
-        }
+        var b =
+            VBox {
+                padding: Insets { bottom: l top: l left: l right: l }
+                spacing: l
+                content: [
+                    HBox {
+                        spacing: l
+                        content: [
+                            Rectangle {
+                                width: 16
+                                height: 16
+                                fill: Color.GRAY
+                                opacity: 0.5
+                                arcWidth: 8
+                                arcHeight: 8
+                            }
+                            Label { text: "Node" }
+                        ]
+                    }
+
+
+                    VBox {
+                        content: [
+                            nameBox,
+                            ChoiceBox {
+                                layoutInfo: LayoutInfo {
+                                    hfill: true
+                                }
+
+                                items: ["Inner", "Source", "Sink"]
+                            }
+                        ]
+                    }
+                ]
+            }
 
         content = [
             rect,
