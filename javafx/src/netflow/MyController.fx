@@ -120,10 +120,10 @@ public class MyController extends Container {
         for (i:MyNode in items) {
             if (i instanceof MyShape) {
                 var l:MyShape = i as MyShape;
-                if (l.node.typeBox.selectedItem == 1) {
+                if (l.node.typeBox.selectedIndex == 1) {
                     g.addEdge(source, l, 100000000);
                 }
-                if (l.node.typeBox.selectedItem == 2) {
+                if (l.node.typeBox.selectedIndex == 2) {
                     g.addEdge(l, sink, 100000000);
                 }
             }
