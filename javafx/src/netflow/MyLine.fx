@@ -13,6 +13,14 @@ public class MyLine extends MyNode {
     public var a:MyShape;
     public var b:MyShape;
 
+    public function isForward():Boolean {
+        node.flow > 0.0001
+    }
+
+    public function isBackward():Boolean {
+        node.flow < -0.0001
+    }
+
     public function rebuild():Void {
         var u:Point2D = a.findBoundaryPoint(b.position, a.position);
         var v:Point2D = b.findBoundaryPoint(a.position, b.position);
@@ -20,7 +28,7 @@ public class MyLine extends MyNode {
         var l:Float = Math.sqrt(Tools.pointsLenSqr(u, v));
 
 
-        var path =             Path {
+        var path = Path {
                 transforms: [
                     Affine {
                         mxx: (v.x-u.x)/l
@@ -40,38 +48,52 @@ public class MyLine extends MyNode {
                     x: l
                     y: 0
                 }
-                LineTo {
-                    x: l-10
-                    y: 5
-                }
-                MoveTo {
-                    x: l
-                    y: 0
-                }
-                LineTo {
-                    x: l-10
-                    y: -5
-                }
 
-                MoveTo {
-                    x: 0
-                    y: 0
-                }
-                LineTo {
-                    x: 10
-                    y: -5
-                }
+                if (isForward()) {
+                    [
+                    MoveTo {
+                        x: l
+                        y: 0
+                    }
 
-                MoveTo {
-                    x: 0
-                    y: 0
-                }
-                LineTo {
-                    x: 10
-                    y: 5
-                }
-                ]
-            }
+                    LineTo {
+                        x: l-10
+                        y: 5
+                    }
+                    MoveTo {
+                        x: l
+                        y: 0
+                    }
+                    LineTo {
+                        x: l-10
+                        y: -5
+                    }
+                    ]
+                } else [],
+
+                if (isBackward()) {
+                    [
+                    MoveTo {
+                        x: 0
+                        y: 0
+                    }
+                    LineTo {
+                        x: 10
+                        y: -5
+                    }
+
+                    MoveTo {
+                        x: 0
+                        y: 0
+                    }
+                    LineTo {
+                        x: 10
+                        y: 5
+                    }
+                    ]
+                } else []
+            ]
+        }
 
         node.layoutX = path.boundsInParent.width/2 + path.boundsInParent.minX;
         node.layoutY = path.boundsInParent.height/2 + path.boundsInParent.minY;
