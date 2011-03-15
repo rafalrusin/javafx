@@ -129,12 +129,12 @@ public class MyController extends Container {
 
             for (i:MyNode in items) {
                 if (i instanceof MyShape) {
-                    var l:MyShape = i as MyShape;
-                    if (l.node.typeBox.selectedIndex == 1) {
-                        g.addEdge(source, l, 100000000);
+                    var s:MyShape = i as MyShape;
+                    if (s.node.typeBox.selectedIndex == 1) {
+                        edgeMap.put(s, g.addEdge(source, s, Double.parseDouble(s.node.capacityTextBox.text)));
                     }
-                    if (l.node.typeBox.selectedIndex == 2) {
-                        g.addEdge(l, sink, 100000000);
+                    if (s.node.typeBox.selectedIndex == 2) {
+                        edgeMap.put(s, g.addEdge(s, sink, Double.parseDouble(s.node.capacityTextBox.text)));
                     }
                 }
             }
@@ -148,7 +148,14 @@ public class MyController extends Container {
                 }
             }
 
-    //        g.flow;
+            for (i:MyNode in items) {
+                if (i instanceof MyShape) {
+                    var s:MyShape = i as MyShape;
+                    if (edgeMap.containsKey(s)) {
+                        s.node.flow = g.flow.get(edgeMap.get(s));
+                    }
+                }
+            }
         } catch (t:Throwable) {
             JOptionPane.showMessageDialog(null, "Error {t.getMessage()}");
         }

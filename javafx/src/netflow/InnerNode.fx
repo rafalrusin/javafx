@@ -10,10 +10,19 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.LayoutInfo;
 import javafx.scene.control.Label;
+import javafx.geometry.VPos;
 
 public class InnerNode extends Container {
     public var selectionColor: Color = Color.LIGHTBLUE;
     public var nameBox: TextBox = TextBox {};
+    public var flow: Double = 0;
+    public var capacityTextBox: TextBox = TextBox {
+        layoutInfo: LayoutInfo {
+            width: 30
+        }
+        text: "10"
+    }
+
     public var typeBox: ChoiceBox = ChoiceBox {
                 layoutInfo: LayoutInfo {
                     hfill: true
@@ -63,7 +72,21 @@ public class InnerNode extends Container {
                     VBox {
                         content: [
                             nameBox,
-                            typeBox
+                            typeBox,
+                            HBox {
+                                visible: bind typeBox.selectedIndex != 0
+                                content: [
+                                    Label {
+                                        layoutInfo: LayoutInfo {
+                                            vpos: VPos.CENTER
+                                        }
+
+                                        text: bind "Capacity: {flow} / "
+                                    }
+
+                                    capacityTextBox
+                                ]
+                            }
                         ]
                     }
                 ]
