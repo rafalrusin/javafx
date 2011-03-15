@@ -14,6 +14,13 @@ import javafx.scene.control.Label;
 public class InnerNode extends Container {
     public var selectionColor: Color = Color.LIGHTBLUE;
     public var nameBox: TextBox = TextBox {};
+    public var typeBox: ChoiceBox = ChoiceBox {
+                layoutInfo: LayoutInfo {
+                    hfill: true
+                }
+
+                items: ["Inner", "Source", "Sink"]
+            }
 
     var rect:Rectangle=Rectangle {
         fill: bind selectionColor
@@ -56,13 +63,7 @@ public class InnerNode extends Container {
                     VBox {
                         content: [
                             nameBox,
-                            ChoiceBox {
-                                layoutInfo: LayoutInfo {
-                                    hfill: true
-                                }
-
-                                items: ["Inner", "Source", "Sink"]
-                            }
+                            typeBox
                         ]
                     }
                 ]

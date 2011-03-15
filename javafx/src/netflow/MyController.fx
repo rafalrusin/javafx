@@ -6,9 +6,11 @@ import java.lang.Void;
 import netflow.MyNode;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Label;
 
 public class MyController extends Container {
     public var items:MyNode[];
+    public var maxFlowLabel:Label;
 
     public var selected:MyNode = null;
 
@@ -100,5 +102,34 @@ public class MyController extends Container {
                 l.rebuild();
             }
         }
+    }
+
+    public function calculateFlow():Void {
+        var g:Fulkerson = new Fulkerson();
+
+        for (i:MyNode in items) {
+            if (i instanceof MyLine) {
+                var l:MyLine = i as MyLine;
+                g.addEdge(l.a, l.b, 10);
+            }
+        }
+
+        var source:Object = new Object();
+        var sink:Object = new Object();
+
+        for (i:MyNode in items) {
+            if (i instanceof MyShape) {
+                var l:MyShape = i as MyShape;
+                if (l.node.typeBox.selectedItem == 1) {
+                    g.addEdge(source, l, 100000000);
+                }
+                if (l.node.typeBox.selectedItem == 2) {
+                    g.addEdge(l, sink, 100000000);
+                }
+            }
+        }
+
+        maxFlowLabel.text = "{g.maxFlow(source,sink)}";
+//        g.flow;
     }
 }

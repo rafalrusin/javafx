@@ -2,7 +2,6 @@ package netflow;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
@@ -14,6 +13,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Container;
 import javafx.geometry.Insets;
+import javax.swing.JOptionPane;
+import javafx.scene.control.Label;
 
 var controller: MyController = MyController {}
 
@@ -42,6 +43,8 @@ class Drawing extends Container {
     }
 }
 
+var maxFlowLabel:Label = Label {}
+
 var scene:Scene = Scene {
         width: 800
         height: 600
@@ -66,9 +69,20 @@ var scene:Scene = Scene {
                         content: [
                             Button {
                                 text: "Calculate Flow"
+                                action: function() {
+                                    controller.calculateFlow();
+                                }
                             }
+                            Label {
+                                text: "Max Flow: "
+                            }
+                            maxFlowLabel,
+
                             Button {
                                 text: "Help"
+                                action: function() {
+                                    JOptionPane.showMessageDialog(null, "msg");
+                                }
                             }
                         ]
                     }
@@ -93,6 +107,7 @@ Stage {
     scene: scene
 }
 
+controller.maxFlowLabel = maxFlowLabel;
 controller.update();
 
 FX.deferAction(function():Void {
