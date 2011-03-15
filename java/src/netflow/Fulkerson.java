@@ -72,7 +72,7 @@ public class Fulkerson {
         }
     }
 
-    public void addEdge(Object u, Object v, double w) {
+    public Edge addEdge(Object u, Object v, double w) {
         Edge edge  = new Edge(u,v,w);
         Edge redge = new Edge(v,u,0);
         edge.redge  = redge;
@@ -81,6 +81,7 @@ public class Fulkerson {
         getAdj(v, new ArrayList<Edge>()).add(redge);
         flow.put(edge, 0.);
         flow.put(redge, 0.);
+        return edge;
     }
 
     public double maxFlow(Object source, Object sink) {

@@ -8,7 +8,7 @@ import javafx.scene.transform.Affine;
 import javafx.util.Math;
 
 public class MyLine extends MyNode {
-    public var node:Node;
+    public var node:InnerConnection;
 
     public var a:MyShape;
     public var b:MyShape;

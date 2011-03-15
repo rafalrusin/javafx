@@ -7,6 +7,10 @@ import netflow.MyNode;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Label;
+import java.lang.Throwable;
+import javax.swing.JOptionPane;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MyController extends Container {
     public var items:MyNode[];
@@ -67,7 +71,11 @@ public class MyController extends Container {
             }
 
             //Add new connection
-            var l:MyLine = MyLine { a: a b: b node: Tools.genConnection("0", "10") }
+            var l:MyLine = MyLine { 
+                a: a
+                b: b
+                node: InnerConnection {}
+            }
             insert l into items;
             update();
         }
@@ -105,31 +113,44 @@ public class MyController extends Container {
     }
 
     public function calculateFlow():Void {
-        var g:Fulkerson = new Fulkerson();
+        try {
+            var edgeMap:Map = new HashMap();
+            var g:Fulkerson = new Fulkerson();
 
-        for (i:MyNode in items) {
-            if (i instanceof MyLine) {
-                var l:MyLine = i as MyLine;
-                g.addEdge(l.a, l.b, 10);
-            }
-        }
-
-        var source:Object = new Object();
-        var sink:Object = new Object();
-
-        for (i:MyNode in items) {
-            if (i instanceof MyShape) {
-                var l:MyShape = i as MyShape;
-                if (l.node.typeBox.selectedIndex == 1) {
-                    g.addEdge(source, l, 100000000);
-                }
-                if (l.node.typeBox.selectedIndex == 2) {
-                    g.addEdge(l, sink, 100000000);
+            for (i:MyNode in items) {
+                if (i instanceof MyLine) {
+                    var l:MyLine = i as MyLine;
+                    edgeMap.put(l, g.addEdge(l.a, l.b, Double.parseDouble(l.node.capacityBox.text)));
                 }
             }
-        }
 
-        maxFlowLabel.text = "{g.maxFlow(source,sink)}";
-//        g.flow;
+            var source:Object = new Object();
+            var sink:Object = new Object();
+
+            for (i:MyNode in items) {
+                if (i instanceof MyShape) {
+                    var l:MyShape = i as MyShape;
+                    if (l.node.typeBox.selectedIndex == 1) {
+                        g.addEdge(source, l, 100000000);
+                    }
+                    if (l.node.typeBox.selectedIndex == 2) {
+                        g.addEdge(l, sink, 100000000);
+                    }
+                }
+            }
+
+            maxFlowLabel.text = "{g.maxFlow(source,sink)}";
+
+            for (i:MyNode in items) {
+                if (i instanceof MyLine) {
+                    var l:MyLine = i as MyLine;
+                    l.node.flow = g.flow.get(edgeMap.get(l));
+                }
+            }
+
+    //        g.flow;
+        } catch (t:Throwable) {
+            JOptionPane.showMessageDialog(null, "Error {t.getMessage()}");
+        }
     }
 }
