@@ -26,7 +26,7 @@ class Drawing extends Container {
 
         onMousePressed: function(e:MouseEvent):Void {
             if (e.button == MouseButton.PRIMARY) {
-                controller.createNode(e);
+//                controller.createNode(e);
                 controller.update();
             }
         }
@@ -70,7 +70,7 @@ var scene:Scene = Scene {
                             Button {
                                 text: "Calculate Flow"
                                 action: function() {
-                                    controller.calculateFlow();
+//                                    controller.controller.calculateFlow();
                                 }
                             }
                             Label {

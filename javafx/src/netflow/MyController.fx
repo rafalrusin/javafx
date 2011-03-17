@@ -11,89 +11,56 @@ import java.lang.Throwable;
 import javax.swing.JOptionPane;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 public class MyController extends Container {
-    public var items:MyNode[];
     public var maxFlowLabel:Label;
+    public var controller:Controller = new Controller();
 
     public var selected:MyNode = null;
 
+    public function render(i:MNode):MyNode {
+        if (controller.renderedItems.containsKey(i)) {
+            return controller.renderedItems.get(i) as MyNode;
+        } else {
+            var uiNode: MyNode;
+            if (i instanceof MShape) {
+                uiNode = MyShape {
+                    model: i
+                    controller: this
+                }
+            } else if (i instanceof MLine) {
+                uiNode = MyLine {
+                    model: i
+                    controller: this
+                }
+            }
+
+            controller.renderedItems.put(i, uiNode);
+            return uiNode;
+        }
+    }
+
+
     public function update():Void {
-//        for (i:MyNode in items) {
-//            i.update();
-//        }
-        content = items;
+        for (i:MNode in controller.model.nodes) {
+            if (i instanceof MShape) {
+                render(i);
+            }
+        }
+        for (i:MNode in controller.model.nodes) {
+            if (i instanceof MLine) {
+                render(i);
+            }
+        }
+        
+        content = for (i:Object in controller.renderedItems.values()) {
+            i as MyNode
+        }
+
         requestLayout();
     }
 
-    public function createNode(e:MouseEvent):Void {
-        var shape1:MyShape = MyShape {
-                        node: InnerNode {}
-                        position: Point2D { x: e.x y: e.y }
-                        controller: this
-                    }
-        insert shape1 into items;
-        shape1.node.nameBox.text = "node-{items.size()}";
-    }
-
-    public function deleteNode(n:MyNode):Void {
-        var l:MyNode[] = items;
-        //Delete connections
-        for (i:MyNode in l) {
-            if (i instanceof MyLine) {
-                var v:MyLine = i as MyLine;
-                if (v.a == n or v.b == n) {
-                    delete i from items;
-                }
-            }
-        }
-
-        //Delete node
-        delete n from items;
-        update();
-    }
-
-    public function connectNode(n:MyNode):Void {
-        if (selected != null) {
-            var a:MyShape = selected as MyShape;
-            var b:MyShape = n as MyShape;
-
-            //Delete connection if already exists
-            for (i:MyNode in items) {
-                if (i instanceof MyLine) {
-                    var j:MyLine = i as MyLine;
-                    if (j.a == a and j.b == b or j.a == b and j.b == a) {
-                        delete i from items;
-                        update();
-                        return;
-                    }
-                }
-            }
-
-            //Add new connection
-            var l:MyLine = MyLine { 
-                a: a
-                b: b
-                node: InnerConnection {}
-            }
-            insert l into items;
-            update();
-        }
-    }
-
-    public function selectNode(n:MyNode):Void {
-        selected = n;
-        for (i:MyNode in items) {
-            if (i instanceof MyShape) {
-                var s:MyShape = i as MyShape;
-                if (i == n) {
-                    s.node.selectionColor = Color.RED;
-                } else {
-                    s.node.selectionColor = Color.LIGHTBLUE;
-                }
-            }
-        }
-    }
 
     override public function doLayout():Void {
         for (i:Node in getManaged(content)) {
@@ -104,12 +71,12 @@ public class MyController extends Container {
             }
         }
 
-        for (i:MyNode in items) {
-            if (i instanceof MyLine) {
-                var l:MyLine = i as MyLine;
-                l.rebuild();
-            }
-        }
+//        for (i:MyNode in items) {
+//            if (i instanceof MyLine) {
+//                var l:MyLine = i as MyLine;
+//                l.rebuild();
+//            }
+//        }
     }
 
     public function calculateFlow():Void {
