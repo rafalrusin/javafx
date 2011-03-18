@@ -8,6 +8,8 @@ import netflow.model.MNode;
 import netflow.model.MLine;
 import netflow.model.MShape;
 import javafx.scene.paint.Color;
+import java.lang.Throwable;
+import javax.swing.JOptionPane;
 
 public class ControllerFx extends Container {
     public var maxFlowLabel:Label;
@@ -99,5 +101,19 @@ public class ControllerFx extends Container {
         }
     }
 
-
+    public function calculateFlow():Void {
+        try {
+            maxFlowLabel.text = "{controller.calculateFlow()}";
+            
+            for (i:Node in content) {
+                if (i instanceof UINode) {
+                    var l:UINode = i as UINode;
+                    l.updateFlow();
+                }
+            }
+        } catch (t:Throwable) {
+            t.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error {t.getMessage()}");
+        }
+    }
 }

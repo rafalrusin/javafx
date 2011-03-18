@@ -8,7 +8,7 @@ import javafx.util.Math;
 import netflow.model.MLine;
 
 public class UILine extends UINode {
-    public var node:InnerConnection;
+    public var node:InnerConnection = InnerConnection { uiLine: this };
 
     public function getModel():MLine {
         model as MLine
@@ -106,6 +106,10 @@ public class UILine extends UINode {
             path,
             node
         ]
+    }
+
+    override public function updateFlow () : Void {
+        node.flow = getModel().flow;
     }
 
     init {

@@ -11,7 +11,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.LayoutInfo;
 import javafx.scene.control.Label;
 import javafx.geometry.VPos;
-import netflow.model.MShape;
+import java.lang.Throwable;
+import netflow.model.MShape.ShapeType;
 
 public class InnerNode extends Container {
     public var uiShape: UIShape;
@@ -24,6 +25,12 @@ public class InnerNode extends Container {
         }
         text: "{uiShape.getModel().capacity}"
     }
+    var capacityTextBoxValue:String = bind capacityTextBox.text on replace oldValue {
+        try {
+            uiShape.getModel().capacity = Double.parseDouble(capacityTextBoxValue)
+        } catch (t:Throwable) {
+        }
+    }
 
     var typeBoxItems:String[] = ["Inner", "Source", "Sink"];
 
@@ -33,6 +40,9 @@ public class InnerNode extends Container {
                 }
                 items: typeBoxItems
             }
+    var typeBoxValue:Integer = bind typeBox.selectedIndex on replace oldValue {
+        uiShape.getModel().type = ShapeType.values()[typeBoxValue]
+    }
 
     var rect:Rectangle=Rectangle {
         fill: bind selectionColor

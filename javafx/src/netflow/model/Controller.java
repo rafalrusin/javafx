@@ -1,7 +1,11 @@
 package netflow.model;
 
+import java.lang.Object;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
+import javax.swing.JOptionPane;
+import netflow.Fulkerson;
 
 public class Controller {
     public Model model;
@@ -46,55 +50,54 @@ public class Controller {
 //        }
 //    }
 
-//    public function calculateFlow():Void {
-//        try {
-//            var edgeMap:Map = new HashMap();
-//            var g:Fulkerson = new Fulkerson();
-//
-//            for (i:MyNode in items) {
-//                if (i instanceof MyLine) {
-//                    var l:MyLine = i as MyLine;
-//                    edgeMap.put(l, g.addEdge(l.a, l.b, Double.parseDouble(l.node.capacityBox.text)));
-//                }
-//            }
-//
-//            var source:Object = new Object();
-//            var sink:Object = new Object();
-//
-//            for (i:MyNode in items) {
-//                if (i instanceof MyShape) {
-//                    var s:MyShape = i as MyShape;
-//                    if (s.node.typeBox.selectedIndex == 1) {
-//                        edgeMap.put(s, g.addEdge(source, s, Double.parseDouble(s.node.capacityTextBox.text)));
-//                    }
-//                    if (s.node.typeBox.selectedIndex == 2) {
-//                        edgeMap.put(s, g.addEdge(s, sink, Double.parseDouble(s.node.capacityTextBox.text)));
-//                    }
-//                }
-//            }
-//
-//            maxFlowLabel.text = "{g.maxFlow(source,sink)}";
-//
-//            for (i:MyNode in items) {
-//                if (i instanceof MyLine) {
-//                    var l:MyLine = i as MyLine;
-//                    l.node.flow = g.flow.get(edgeMap.get(l));
-//                }
-//            }
-//
-//            for (i:MyNode in items) {
-//                if (i instanceof MyShape) {
-//                    var s:MyShape = i as MyShape;
-//                    if (edgeMap.containsKey(s)) {
-//                        s.node.flow = g.flow.get(edgeMap.get(s));
-//                    }
-//                }
-//            }
-//        } catch (t:Throwable) {
-//            JOptionPane.showMessageDialog(null, "Error {t.getMessage()}");
-//        }
-//    }
+    public double calculateFlow() {
+        Map edgeMap = new HashMap();
+        Fulkerson g = new Fulkerson();
 
+        for (MNode i : model.nodes) {
+            if (i instanceof MLine) {
+                MLine l = (MLine) i;
+                System.out.println("Line "+l.a.name + " -> " + l.b.name + " " + l.capacity);
+                edgeMap.put(l, g.addEdge(l.a, l.b, l.capacity));
+            }
+        }
+
+        Object source = new Object();
+        Object sink = new Object();
+
+        for (MNode i : model.nodes) {
+            if (i instanceof MShape) {
+                MShape s = (MShape) i;
+                System.out.println("Shape "+s.name + " type " + s.type + " capacity " + s.capacity);
+                if (s.type == MShape.ShapeType.SOURCE) {
+                    edgeMap.put(s, g.addEdge(source, s, s.capacity));
+                }
+                if (s.type == MShape.ShapeType.SINK) {
+                    edgeMap.put(s, g.addEdge(s, sink, s.capacity));
+                }
+            } else {
+            }
+        }
+
+        double maxFlow = g.maxFlow(source,sink);
+
+        for (MNode i : model.nodes) {
+            if (i instanceof MLine) {
+                MLine l = (MLine) i;
+                l.flow = g.flow.get(edgeMap.get(l));
+            }
+        }
+
+        for (MNode i : model.nodes) {
+            if (i instanceof MShape) {
+                MShape s = (MShape) i;
+                if (edgeMap.containsKey(s)) {
+                    s.flow = g.flow.get(edgeMap.get(s));
+                }
+            }
+        }
+        return maxFlow;
+    }
 
     public void connectNodes(MShape a, MShape b) {
         //Delete connection if already exists
@@ -112,8 +115,6 @@ public class Controller {
         MLine l = new MLine();
         l.a = a;
         l.b = b;
-        l.capacity = 0;
-        l.flow = 10;
         model.nodes.add(l);
     }
 }

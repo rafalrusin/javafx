@@ -4,14 +4,23 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.LayoutInfo;
+import java.lang.Throwable;
 
 public class InnerConnection extends HBox {
+    public var uiLine:UILine;
     public var flow: Double = 0;
-    public var capacityBox:TextBox = TextBox {
+    public var capacityTextBox:TextBox = TextBox {
         layoutInfo: LayoutInfo {
             width: 30
         }
-        text: "10"
+        text: "{uiLine.getModel().capacity}"
+    }
+
+    var capacityTextBoxValue:String = bind capacityTextBox.text on replace oldValue {
+        try {
+            uiLine.getModel().capacity = Double.parseDouble(capacityTextBoxValue)
+        } catch (t:Throwable) {
+        }
     }
 
     init {
@@ -23,7 +32,7 @@ public class InnerConnection extends HBox {
 
                 text: bind "{flow} / "
             }
-            capacityBox
+            capacityTextBox
         ]
     }
 }

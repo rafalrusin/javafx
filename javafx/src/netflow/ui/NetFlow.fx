@@ -73,7 +73,7 @@ var scene:Scene = Scene {
                             Button {
                                 text: "Calculate Flow"
                                 action: function() {
-//                                    controller.controller.calculateFlow();
+                                    controllerFx.calculateFlow();
                                 }
                             }
                             Label {

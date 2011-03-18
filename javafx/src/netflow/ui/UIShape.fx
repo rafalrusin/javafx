@@ -3,7 +3,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import netflow.model.MShape;
-import javafx.scene.control.Label;
 
 public class UIShape extends UINode {
     public var node:InnerNode = InnerNode { uiShape:this };
@@ -56,13 +55,13 @@ public class UIShape extends UINode {
             }
         }
     }
+    
+    override public function updateFlow () : Void {
+        node.flow = getModel().flow;
+    }
 
     init {
         blocksMouse = true;
-//        translateX = -node.boundsInLocal.width/2;
-//        translateY = -node.boundsInLocal.height/2;
-//        println("{translateX} {translateY}");
-//        updatePosition();
         content = [
             node
         ]
