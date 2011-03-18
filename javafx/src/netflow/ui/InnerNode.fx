@@ -1,4 +1,4 @@
-package netflow;
+package netflow.ui;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;

@@ -1,4 +1,4 @@
-package netflow;
+package netflow.ui;
 import javafx.geometry.VPos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextBox;

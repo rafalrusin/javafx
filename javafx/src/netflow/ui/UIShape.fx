@@ -1,40 +1,45 @@
-package netflow;
+package netflow.ui;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import netflow.model.MShape;
+import javafx.scene.control.Label;
 
-public class MyShape extends MyNode {
-    public var controller:MyController;
-    public var node:InnerNode;
-    public var position:Point2D;
+public class UIShape extends UINode {
+    public var node:InnerNode = InnerNode{};
+
+    public function getModel():MShape {
+        model as MShape;
+    }
 
 //    public var s:Node;
 
 //    public function updatePosition():Void {
-//        translateX = position.x;
-//        translateY = position.y;
+//        translateX = getModel().x;
+//        translateY = getModel().y;
 //    }
 
     var dragBase:Point2D;
 
     public override var onMouseDragged = function(e:MouseEvent):Void {
-        position = Point2D {
-            x: dragBase.x + e.dragX
-            y: dragBase.y + e.dragY
-        }
+        getModel().x = dragBase.x + e.dragX;
+        getModel().y = dragBase.y + e.dragY;
         controller.update();
     }
 
     public override var onMousePressed = function(e:MouseEvent):Void {
-        dragBase = position;
+        dragBase = Point2D {
+            x: getModel().x
+            y: getModel().y
+        }
         if (e.button == MouseButton.PRIMARY) {
-            controller.selectNode(this);
+//            controller.selectNode(this);
         }
         if (e.button == MouseButton.SECONDARY) {
             if (controller.selected == this) {
-                controller.deleteNode(this);
+//                controller.deleteNode(this);
             } else {
-                controller.connectNode(this);
+//                controller.connectNode(this);
             }
         }
     }
@@ -46,8 +51,8 @@ public class MyShape extends MyNode {
             return m;
         } else {
             var n:Point2D = Point2D {
-                x: m.x - position.x + width/2
-                y: m.y - position.y + height/2
+                x: m.x - getModel().x + width/2
+                y: m.y - getModel().y + height/2
             }
 
             if (contains(n)) {

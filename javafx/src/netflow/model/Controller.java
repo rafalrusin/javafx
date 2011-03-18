@@ -1,4 +1,4 @@
-package netflow;
+package netflow.model;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -8,18 +8,15 @@ public class Controller {
     public Map<MNode, Object> renderedItems = new WeakHashMap<MNode, Object>();
 
     public void createNode(double x, double y) {
-//
-//        var shape1:MyShape = MyShape {
-//                        node: InnerNode {}
-//                        position: Point2D { x: e.x y: e.y }
-//                        controller: this
-//                    }
-//        insert shape1 into items;
-//        shape1.node.nameBox.text = "node-{items.size()}";
+        MShape shape = new MShape();
+        shape.name = "node-" + model.nodes.size();
+        shape.x = x;
+        shape.y = y;
+        model.nodes.add(shape);
     }
 
     public void deleteNode(MNode n) {
-//        var l:MyNode[] = items;
+        model.nodes.remove(n);
 //        //Delete connections
 //        for (i:MyNode in l) {
 //            if (i instanceof MyLine) {

@@ -1,4 +1,4 @@
-package netflow;
+package netflow.ui;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -15,18 +15,21 @@ import javafx.scene.layout.Container;
 import javafx.geometry.Insets;
 import javax.swing.JOptionPane;
 import javafx.scene.control.Label;
+import netflow.model.Model;
 
-var controller: MyController = MyController {}
+var model:Model = new Model();
+var controllerFx: ControllerFx = ControllerFx {}
+controllerFx.controller.model = model;
 
 class Drawing extends Container {
-    public var controller: MyController;
+    public var controller: ControllerFx;
 
     public var rect:Rectangle = Rectangle {
         fill: Color.WHITE
 
         onMousePressed: function(e:MouseEvent):Void {
             if (e.button == MouseButton.PRIMARY) {
-//                controller.createNode(e);
+                controller.controller.createNode(e.x, e.y);
                 controller.update();
             }
         }
@@ -95,7 +98,7 @@ var scene:Scene = Scene {
                             vgrow: Priority.ALWAYS
                         }
 
-                        controller: controller
+                        controller: controllerFx
                     }
                 ]
             }
@@ -107,9 +110,9 @@ Stage {
     scene: scene
 }
 
-controller.maxFlowLabel = maxFlowLabel;
-controller.update();
+controllerFx.maxFlowLabel = maxFlowLabel;
+controllerFx.update();
 
 FX.deferAction(function():Void {
-    controller.update();
+    controllerFx.update();
 });
