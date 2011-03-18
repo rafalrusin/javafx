@@ -82,6 +82,13 @@ var scene:Scene = Scene {
                             maxFlowLabel,
 
                             Button {
+                                text: "Import / Export"
+                                action: function() {
+                                    IO.io("abc", null);
+                                }
+                            }
+
+                            Button {
                                 text: "Help"
                                 action: function() {
                                     JOptionPane.showMessageDialog(null, "msg");
