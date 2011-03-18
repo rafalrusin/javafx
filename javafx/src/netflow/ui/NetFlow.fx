@@ -85,12 +85,11 @@ var scene:Scene = Scene {
                                 text: "Import / Export"
                                 action: function() {
                                     IO { 
-                                        data: "abc"
+                                        data: controllerFx.controller.model.persist()
                                         action: function(v:String):Void {
-                                            var m:Model = new Model();
+                                            var m:Model = Model.fromString(v);
                                             controllerFx.controller.model = m;
                                             controllerFx.update();
-                                            println("loaded");
                                         }
                                     };
                                 }

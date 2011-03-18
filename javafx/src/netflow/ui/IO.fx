@@ -11,7 +11,10 @@ public class IO {
     public var data:String;
     public var action:function(String):Void;
 
-    var textBox:TextBox = TextBox { multiline: true }
+    var textBox:TextBox = TextBox {
+        text: data
+        multiline: true
+    }
 
     var scene:Scene = Scene {
         width: 600
