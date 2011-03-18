@@ -66,8 +66,8 @@ public class ControllerFx extends Container {
             }
         }
         
-        content = for (i:Object in controller.renderedItems.values()) {
-            i as UINode
+        content = for (i:Object in controller.model.nodes) {
+            render(i as MNode)
         }
 
         requestLayout();

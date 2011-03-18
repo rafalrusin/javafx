@@ -7,7 +7,12 @@ import javafx.scene.layout.LayoutInfo;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextBox;
 
-public function io(data:String, action:function(String):Void):Void {
+public class IO {
+    public var data:String;
+    public var action:function(String):Void;
+
+    var textBox:TextBox = TextBox { multiline: true }
+
     var scene:Scene = Scene {
         width: 600
         height: 500
@@ -20,17 +25,21 @@ public function io(data:String, action:function(String):Void):Void {
                 content: [
                     Button {
                         text: "OK"
+                        action: function():Void {
+                            stage.close();
+                            action(textBox.text);
+                        }
                     }
-                    TextBox {
-                        multiline: true
-                    }
+                    textBox
                 ]
             }
         ]
     }
 
-    Stage {
+    var stage:Stage = Stage {
         title: "Import / Export"
         scene: scene
     }
 }
+
+

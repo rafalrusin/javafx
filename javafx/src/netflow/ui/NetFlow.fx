@@ -84,7 +84,15 @@ var scene:Scene = Scene {
                             Button {
                                 text: "Import / Export"
                                 action: function() {
-                                    IO.io("abc", null);
+                                    IO { 
+                                        data: "abc"
+                                        action: function(v:String):Void {
+                                            var m:Model = new Model();
+                                            controllerFx.controller.model = m;
+                                            controllerFx.update();
+                                            println("loaded");
+                                        }
+                                    };
                                 }
                             }
 
