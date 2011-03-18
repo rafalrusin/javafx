@@ -9,7 +9,7 @@ public class Controller {
 
     public void createNode(double x, double y) {
         MShape shape = new MShape();
-        shape.name = "node-" + model.nodes.size();
+        shape.name = "node-" + (model.nodes.size()+1);
         shape.x = x;
         shape.y = y;
         model.nodes.add(shape);
@@ -31,34 +31,6 @@ public class Controller {
 //        delete n from items;
 //        update();
     }
-
-//    public function connectNode(n:MyNode):Void {
-//        if (selected != null) {
-//            var a:MyShape = selected as MyShape;
-//            var b:MyShape = n as MyShape;
-//
-//            //Delete connection if already exists
-//            for (i:MyNode in items) {
-//                if (i instanceof MyLine) {
-//                    var j:MyLine = i as MyLine;
-//                    if (j.a == a and j.b == b or j.a == b and j.b == a) {
-//                        delete i from items;
-//                        update();
-//                        return;
-//                    }
-//                }
-//            }
-//
-//            //Add new connection
-//            var l:MyLine = MyLine {
-//                a: a
-//                b: b
-//                node: InnerConnection {}
-//            }
-//            insert l into items;
-//            update();
-//        }
-//    }
 
 //    public function selectNode(n:MyNode):Void {
 //        selected = n;
@@ -123,4 +95,25 @@ public class Controller {
 //        }
 //    }
 
+
+    public void connectNodes(MShape a, MShape b) {
+        //Delete connection if already exists
+        for (MNode i : model.nodes) {
+            if (i instanceof MLine) {
+                MLine j = (MLine) i;
+                if (j.a == a && j.b == b || j.a == b && j.b == a) {
+                    model.nodes.remove(i);
+                    return;
+                }
+            }
+        }
+
+        //Add new connection
+        MLine l = new MLine();
+        l.a = a;
+        l.b = b;
+        l.capacity = 0;
+        l.flow = 10;
+        model.nodes.add(l);
+    }
 }

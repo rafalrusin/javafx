@@ -1,17 +1,18 @@
 package netflow.ui;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.transform.Affine;
 import javafx.util.Math;
+import netflow.model.MLine;
 
 public class UILine extends UINode {
     public var node:InnerConnection;
 
-    public var a:UIShape;
-    public var b:UIShape;
+    public function getModel():MLine {
+        model as MLine
+    }
 
     public function isForward():Boolean {
         node.flow > 0.0001
@@ -22,6 +23,8 @@ public class UILine extends UINode {
     }
 
     public function rebuild():Void {
+        var a:UIShape = controller.render(getModel().a) as UIShape;
+        var b:UIShape = controller.render(getModel().b) as UIShape;
         var u:Point2D = a.findBoundaryPoint(Tools.shapePosition(b.getModel()), Tools.shapePosition(a.getModel()));
         var v:Point2D = b.findBoundaryPoint(Tools.shapePosition(a.getModel()), Tools.shapePosition(b.getModel()));
 

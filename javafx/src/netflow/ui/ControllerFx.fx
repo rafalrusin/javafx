@@ -1,20 +1,13 @@
 package netflow.ui;
 import javafx.scene.Node;
 import javafx.scene.layout.Container;
-import javafx.scene.paint.Color;
 import java.lang.Void;
-import javafx.geometry.Point2D;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Label;
-import java.lang.Throwable;
-import javax.swing.JOptionPane;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
 import netflow.model.Controller;
 import netflow.model.MNode;
 import netflow.model.MLine;
 import netflow.model.MShape;
+import javafx.scene.paint.Color;
 
 public class ControllerFx extends Container {
     public var maxFlowLabel:Label;
@@ -44,11 +37,25 @@ public class ControllerFx extends Container {
         }
     }
 
+    public function selectNode(n:UINode):Void {
+        selected = n;
+        for (o:Object in controller.renderedItems.values()) {
+            var i:UINode = o as UINode;
+            if (i instanceof UIShape) {
+                var s:UIShape = i as UIShape;
+                if (i == n) {
+                    s.node.selectionColor = Color.RED;
+                } else {
+                    s.node.selectionColor = Color.LIGHTBLUE;
+                }
+            }
+        }
+    }
 
     public function update():Void {
         for (i:MNode in controller.model.nodes) {
             if (i instanceof MShape) {
-                render(i);
+                var s:UIShape = render(i) as UIShape;
             }
         }
         for (i:MNode in controller.model.nodes) {
@@ -74,12 +81,23 @@ public class ControllerFx extends Container {
             }
         }
 
-//        for (i:MyNode in items) {
-//            if (i instanceof MyLine) {
-//                var l:MyLine = i as MyLine;
-//                l.rebuild();
-//            }
-//        }
+        for (i:Node in content) {
+            if (i instanceof UILine) {
+                var l:UILine = i as UILine;
+                l.rebuild();
+            }
+        }
     }
+
+    public function connectNode(n:UINode):Void {
+        if (selected != null) {
+            var a:UIShape = selected as UIShape;
+            var b:UIShape = n as UIShape;
+
+            controller.connectNodes(a.getModel(), b.getModel());
+            update();
+        }
+    }
+
 
 }

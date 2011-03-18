@@ -11,24 +11,27 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.LayoutInfo;
 import javafx.scene.control.Label;
 import javafx.geometry.VPos;
+import netflow.model.MShape;
 
 public class InnerNode extends Container {
+    public var uiShape: UIShape;
     public var selectionColor: Color = Color.LIGHTBLUE;
-    public var nameBox: TextBox = TextBox {};
-    public var flow: Double = 0;
+    public var nameBox: TextBox = TextBox { text: uiShape.getModel().name };
+    public var flow: Double = uiShape.getModel().flow;
     public var capacityTextBox: TextBox = TextBox {
         layoutInfo: LayoutInfo {
             width: 30
         }
-        text: "10"
+        text: "{uiShape.getModel().capacity}"
     }
+
+    var typeBoxItems:String[] = ["Inner", "Source", "Sink"];
 
     public var typeBox: ChoiceBox = ChoiceBox {
                 layoutInfo: LayoutInfo {
                     hfill: true
                 }
-
-                items: ["Inner", "Source", "Sink"]
+                items: typeBoxItems
             }
 
     var rect:Rectangle=Rectangle {
@@ -92,6 +95,7 @@ public class InnerNode extends Container {
                 ]
             }
 
+        typeBox.select(uiShape.getModel().type.ordinal());
         content = [
             rect,
             b

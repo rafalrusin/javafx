@@ -6,18 +6,11 @@ import netflow.model.MShape;
 import javafx.scene.control.Label;
 
 public class UIShape extends UINode {
-    public var node:InnerNode = InnerNode{};
+    public var node:InnerNode = InnerNode { uiShape:this };
 
     public function getModel():MShape {
         model as MShape;
     }
-
-//    public var s:Node;
-
-//    public function updatePosition():Void {
-//        translateX = getModel().x;
-//        translateY = getModel().y;
-//    }
 
     var dragBase:Point2D;
 
@@ -33,13 +26,14 @@ public class UIShape extends UINode {
             y: getModel().y
         }
         if (e.button == MouseButton.PRIMARY) {
-//            controller.selectNode(this);
+            controller.selectNode(this);
         }
         if (e.button == MouseButton.SECONDARY) {
             if (controller.selected == this) {
-//                controller.deleteNode(this);
+                controller.controller.deleteNode(model);
+                controller.update();
             } else {
-//                controller.connectNode(this);
+                controller.connectNode(this);
             }
         }
     }
