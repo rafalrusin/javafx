@@ -114,5 +114,6 @@ public class UILine extends UINode {
 
     init {
         rebuild();
+        updateFlow();
     }
 }
