@@ -100,7 +100,7 @@ public class UILine extends UINode {
 
         node.layoutX = path.boundsInParent.width/2 + path.boundsInParent.minX;
         node.layoutY = path.boundsInParent.height/2 + path.boundsInParent.minY;
-        println("conn layout {node.layoutX} {node.layoutY} {path.boundsInLocal}");
+//        println("conn layout {node.layoutX} {node.layoutY} {path.boundsInLocal}");
 
         content = [
             path,
