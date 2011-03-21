@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import javax.swing.JOptionPane;
 import netflow.Fulkerson;
-import org.apache.commons.io.IOUtils;
 
 public class Controller {
     public Model model;
@@ -123,8 +122,7 @@ public class Controller {
     public void openURL(String url) {
         try {
            URL u = new URL(url);
-           String s = IOUtils.toString(u.openStream());
-           Model m = Model.fromString(s);
+           Model m = (Model) Model.getXStream().fromXML(u.openStream());
            model = m;
         } catch (Throwable t) {
             t.printStackTrace();

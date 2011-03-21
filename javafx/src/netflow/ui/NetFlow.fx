@@ -2,50 +2,34 @@ package netflow.ui;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.paint.Color;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.LayoutInfo;
 import javafx.scene.layout.Priority;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Container;
 import javafx.geometry.Insets;
 import javax.swing.JOptionPane;
 import javafx.scene.control.Label;
 import netflow.model.Model;
 import javafx.scene.control.ChoiceBox;
+import java.util.List;
 import java.net.URL;
+import java.lang.Throwable;
+import java.util.ArrayList;
 
 var model:Model = new Model();
 var controllerFx: ControllerFx = ControllerFx {}
 controllerFx.controller.model = model;
 
-class Drawing extends Container {
-    public var controller: ControllerFx;
+//var urlList:List = new ArrayList();
+//urlList.add("http://sites.google.com/site/rrusin999/syntax/simple.xml");
+//println(Model.getXStream().toXML(urlList));
 
-    public var rect:Rectangle = Rectangle {
-        fill: Color.WHITE
-
-        onMousePressed: function(e:MouseEvent):Void {
-            if (e.button == MouseButton.PRIMARY) {
-                controller.controller.createNode(e.x, e.y);
-                controller.update();
-            }
-        }
-    }
-
-    override public function doLayout():Void {
-        rect.width = width;
-        rect.height = height;
-        resizeNode(controller, width, height);
-    }
-
-    init {
-        content = [rect, controller]
-    }
+var urlList:List = new ArrayList();
+try {
+    urlList = Model.getXStream().fromXML(new URL("http://sites.google.com/site/rrusin999/syntax/list.xml").openStream()) as List;
+} catch (t:Throwable) {
+    t.printStackTrace();
 }
 
 var maxFlowLabel:Label = Label {}
@@ -131,7 +115,7 @@ var scene:Scene = Scene {
                                     hfill: true
                                 }
 
-                                items: ["http://sites.google.com/site/rrusin999/syntax/simple.xml"]
+                                items: for (i in urlList) i as String
                             };
                             [
                                 Button {
