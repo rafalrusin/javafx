@@ -1,11 +1,13 @@
 package netflow.model;
 
 import java.lang.Object;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 import javax.swing.JOptionPane;
 import netflow.Fulkerson;
+import org.apache.commons.io.IOUtils;
 
 public class Controller {
     public Model model;
@@ -116,5 +118,17 @@ public class Controller {
         l.a = a;
         l.b = b;
         model.nodes.add(l);
+    }
+
+    public void openURL(String url) {
+        try {
+           URL u = new URL(url);
+           String s = IOUtils.toString(u.openStream());
+           Model m = Model.fromString(s);
+           model = m;
+        } catch (Throwable t) {
+            t.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error " + t.getMessage());
+        }
     }
 }

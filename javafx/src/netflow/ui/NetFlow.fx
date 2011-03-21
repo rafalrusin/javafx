@@ -16,6 +16,8 @@ import javafx.geometry.Insets;
 import javax.swing.JOptionPane;
 import javafx.scene.control.Label;
 import netflow.model.Model;
+import javafx.scene.control.ChoiceBox;
+import java.net.URL;
 
 var model:Model = new Model();
 var controllerFx: ControllerFx = ControllerFx {}
@@ -47,6 +49,13 @@ class Drawing extends Container {
 }
 
 var maxFlowLabel:Label = Label {}
+
+function updateFx():Void {
+    controllerFx.update();
+    FX.deferAction(function():Void {
+        controllerFx.update();
+    });
+}
 
 var scene:Scene = Scene {
         width: 800
@@ -89,10 +98,7 @@ var scene:Scene = Scene {
                                         action: function(v:String):Void {
                                             var m:Model = Model.fromString(v);
                                             controllerFx.controller.model = m;
-                                            controllerFx.update();
-                                            FX.deferAction(function():Void {
-                                                controllerFx.update();
-                                            });
+                                            updateFx();
                                         }
                                     };
                                 }
@@ -106,6 +112,41 @@ var scene:Scene = Scene {
                             }
                         ]
                     }
+
+                    HBox {
+                        spacing: 5
+                        padding: {
+                            var l=5;
+                            Insets { bottom: l top: l left: l right: l }
+                        }
+
+                        layoutInfo: LayoutInfo {
+                            vgrow: Priority.NEVER
+                        }
+
+                        content: 
+                        {
+                            var b:ChoiceBox = ChoiceBox {
+                                layoutInfo: LayoutInfo {
+                                    hfill: true
+                                }
+
+                                items: ["http://sites.google.com/site/rrusin999/syntax/simple.xml"]
+                            };
+                            [
+                                Button {
+                                    text: "Open URL"
+                                    action: function():Void {
+                                        controllerFx.controller.openURL(b.selectedItem as String);
+                                        updateFx();
+                                    }
+                                }
+                                b
+                            ]
+                        }
+                        
+                    }
+
 
                     Drawing {
                         layoutInfo: LayoutInfo {
@@ -128,8 +169,4 @@ Stage {
 }
 
 controllerFx.maxFlowLabel = maxFlowLabel;
-controllerFx.update();
-
-FX.deferAction(function():Void {
-    controllerFx.update();
-});
+updateFx();
