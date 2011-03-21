@@ -10,7 +10,7 @@ public class Model {
 
     public static XStream getXStream() {
         XStream xstream = new XStream(new DomDriver());
-        xstream.setMode(XStream.NO_REFERENCES);
+        xstream.setMode(XStream.ID_REFERENCES);
         return xstream;
     }
 

@@ -15,6 +15,8 @@ import java.lang.Throwable;
 import netflow.model.MShape.ShapeType;
 
 public class InnerNode extends Container {
+    var initialized: Boolean = false;
+
     public var uiShape: UIShape;
     public var selectionColor: Color = Color.LIGHTBLUE;
     public var nameBox: TextBox = TextBox { text: uiShape.getModel().name };
@@ -41,7 +43,9 @@ public class InnerNode extends Container {
                 items: typeBoxItems
             }
     var typeBoxValue:Integer = bind typeBox.selectedIndex on replace oldValue {
-        uiShape.getModel().type = ShapeType.values()[typeBoxValue]
+        if (initialized) {
+            uiShape.getModel().type = ShapeType.values()[typeBoxValue]
+        }
     }
 
     var rect:Rectangle=Rectangle {
@@ -106,6 +110,7 @@ public class InnerNode extends Container {
             }
 
         typeBox.select(uiShape.getModel().type.ordinal());
+        initialized = true;
         content = [
             rect,
             b

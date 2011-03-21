@@ -90,6 +90,9 @@ var scene:Scene = Scene {
                                             var m:Model = Model.fromString(v);
                                             controllerFx.controller.model = m;
                                             controllerFx.update();
+                                            FX.deferAction(function():Void {
+                                                controllerFx.update();
+                                            });
                                         }
                                     };
                                 }
