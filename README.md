@@ -1,7 +1,7 @@
 # NetFlow
 NetFlow is a simple graph editor with ability to compute maximum flow.
 
-Details can be found here: ...
+Details can be found here: [NetFlow on blogspot](http://rrusin.blogspot.com/2011/03/implementing-graph-editor-in-javafx.html "NetFlow on blogspot").
 
 [Launch JNLP](http://sites.google.com/site/rrusin999/syntax/netflow.jnlp "Launch NetFlow")
 
