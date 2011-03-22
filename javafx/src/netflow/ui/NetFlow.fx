@@ -25,6 +25,8 @@ controllerFx.controller.model = model;
 //urlList.add("http://sites.google.com/site/rrusin999/syntax/simple.xml");
 //println(Model.getXStream().toXML(urlList));
 
+//println(Model.getXStream().toXML("asdf"));
+
 var urlList:List = new ArrayList();
 try {
     urlList = Model.getXStream().fromXML(new URL("http://sites.google.com/site/rrusin999/syntax/list.xml").openStream()) as List;
@@ -64,6 +66,14 @@ var scene:Scene = Scene {
 
                         content: [
                             Button {
+                                text: "New"
+                                action: function() {
+                                    var m:Model = new Model();
+                                    controllerFx.controller.model = m;
+                                    updateFx();
+                                }
+                            }
+                            Button {
                                 text: "Calculate Flow"
                                 action: function() {
                                     controllerFx.calculateFlow();
@@ -91,7 +101,7 @@ var scene:Scene = Scene {
                             Button {
                                 text: "Help"
                                 action: function() {
-                                    JOptionPane.showMessageDialog(null, "msg");
+                                    JOptionPane.showMessageDialog(null, Model.getXStream().fromXML(NetFlow.class.getResourceAsStream("/netflow/ui/help.xml")) as String);
                                 }
                             }
                         ]

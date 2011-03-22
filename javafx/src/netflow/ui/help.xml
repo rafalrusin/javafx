@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<string>Network editing:
+- create node: left click on canvas
+- connect nodes: left click on node to select source, then right on different node
+- disconnect nodes: same as connect
+- drag node: press left mouse button on node and drag
+- delete node: left click to select node, then right click to delete
+</string>
