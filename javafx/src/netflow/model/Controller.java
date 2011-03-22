@@ -59,7 +59,7 @@ public class Controller {
             if (i instanceof MLine) {
                 MLine l = (MLine) i;
                 System.out.println("Line "+l.a.name + " -> " + l.b.name + " " + l.capacity);
-                edgeMap.put(l, g.addEdge(l.a, l.b, l.capacity));
+                edgeMap.put(l, g.addEdge(l.a, l.b, l.capacity, l.capacity));
             }
         }
 
@@ -71,10 +71,10 @@ public class Controller {
                 MShape s = (MShape) i;
                 System.out.println("Shape "+s.name + " type " + s.type + " capacity " + s.capacity);
                 if (s.type == MShape.ShapeType.SOURCE) {
-                    edgeMap.put(s, g.addEdge(source, s, s.capacity));
+                    edgeMap.put(s, g.addEdge(source, s, s.capacity, 0));
                 }
                 if (s.type == MShape.ShapeType.SINK) {
-                    edgeMap.put(s, g.addEdge(s, sink, s.capacity));
+                    edgeMap.put(s, g.addEdge(s, sink, s.capacity, 0));
                 }
             } else {
             }

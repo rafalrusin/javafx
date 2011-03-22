@@ -72,9 +72,9 @@ public class Fulkerson {
         }
     }
 
-    public Edge addEdge(Object u, Object v, double w) {
+    public Edge addEdge(Object u, Object v, double w, double z) {
         Edge edge  = new Edge(u,v,w);
-        Edge redge = new Edge(v,u,0);
+        Edge redge = new Edge(v,u,z);
         edge.redge  = redge;
         redge.redge = edge;
         getAdj(u, new ArrayList<Edge>()).add(edge);

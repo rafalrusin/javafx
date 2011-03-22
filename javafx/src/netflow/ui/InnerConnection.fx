@@ -5,6 +5,7 @@ import javafx.scene.control.TextBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.LayoutInfo;
 import java.lang.Throwable;
+import javafx.util.Math;
 
 public class InnerConnection extends HBox {
     public var uiLine:UILine;
@@ -30,7 +31,7 @@ public class InnerConnection extends HBox {
                     vpos: VPos.CENTER
                 }
 
-                text: bind "{flow} / "
+                text: bind "{Math.abs(flow)} / "
             }
             capacityTextBox
         ]
