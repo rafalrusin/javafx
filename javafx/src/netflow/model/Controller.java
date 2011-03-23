@@ -1,9 +1,10 @@
 package netflow.model;
 
-import java.lang.Object;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 import javax.swing.JOptionPane;
 import netflow.Fulkerson;
@@ -21,35 +22,21 @@ public class Controller {
     }
 
     public void deleteNode(MNode n) {
-        model.nodes.remove(n);
-//        //Delete connections
-//        for (i:MyNode in l) {
-//            if (i instanceof MyLine) {
-//                var v:MyLine = i as MyLine;
-//                if (v.a == n or v.b == n) {
-//                    delete i from items;
-//                }
-//            }
-//        }
-//
-//        //Delete node
-//        delete n from items;
-//        update();
-    }
+        //Delete connections
+        Set<MNode> toDelete = new HashSet<MNode>();
+        for (MNode i : model.nodes) {
+            if (i instanceof MLine) {
+                MLine l = (MLine) i;
+                if (l.a == n || l.b == n) {
+                    toDelete.add(l);
+                }
+            }
+        }
+        model.nodes.removeAll(toDelete);
 
-//    public function selectNode(n:MyNode):Void {
-//        selected = n;
-//        for (i:MyNode in items) {
-//            if (i instanceof MyShape) {
-//                var s:MyShape = i as MyShape;
-//                if (i == n) {
-//                    s.node.selectionColor = Color.RED;
-//                } else {
-//                    s.node.selectionColor = Color.LIGHTBLUE;
-//                }
-//            }
-//        }
-//    }
+        //Delete node
+        model.nodes.remove(n);
+    }
 
     public double calculateFlow() {
         Map edgeMap = new HashMap();
